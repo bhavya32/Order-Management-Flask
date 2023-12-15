@@ -1,0 +1,135 @@
+html {
+    font-family: Helvetica, sans-serif;
+}
+
+body {
+    background-color: #f0f0f0;
+    margin:0;
+}
+
+#header {
+    top:0;
+    font-size: 1.3rem;
+    background-color: #282A35;
+    color: white;
+    position: fixed;
+    height: 4rem;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+#body {
+    padding-top: 4rem;
+    width:100%
+}
+
+.tinput {
+    border-collapse: collapse;
+    width: 80%;
+    margin: auto;
+}
+
+.tinput td, .tinput th {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+.tinput tr:nth-child(even){background-color: #cfc8c8;}
+
+input[type=text], input[type=number] {
+    border: none;
+    background-color: transparent;
+    outline: 0;
+}
+
+.tableHeading {
+    padding-top: 0.1px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 30px;
+    margin-bottom: 5px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#share {
+    display: flex;
+    justify-content: center;
+    margin: 15px;
+}
+
+button {
+    margin: 10px;
+}
+
+.singleLine {
+    width: 50%;
+    margin: 4px;
+    border: 2px solid black;
+    display: flex;
+    justify-content: center;
+}
+
+#total {
+    margin-top: 75px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#config {
+    margin-top: 10px;
+    display: flex;
+}
+
+#config input {
+    text-align: center;
+}
+
+#insertTable {
+    margin: auto;
+    margin-top: 20px;
+}
+
+#insertTable select {
+    height: 20px;
+    margin: auto;
+    margin-left: 10px;
+    width:100px;
+}
+
+#partyName {
+    background: aliceblue;
+    border-radius: 20px;
+    height: 20px;
+    text-align: center;
+}
+
+.tableDiv {
+    padding-top: 0.5px;
+    break-inside: avoid-column;
+}
+
+#tables {
+    column-count: 2;
+}
+
+#table {
+    margin-top: 20px;
+}
+
+#orderList, #orderItemsList{
+    margin-top: 30px
+}
+
+.partyList {
+    background: aliceblue;
+    border-radius: 12px;
+}
+
+input::-webkit-calendar-picker-indicator {
+    display: none !important;
+  }

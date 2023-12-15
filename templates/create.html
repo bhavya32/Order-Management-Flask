@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Create Order</title>
+        <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+       
+        <script src="{{url_for('static', filename='index.js')}}"></script>
+        <script src="{{url_for('static', filename='create.js')}}"></script>
+        
+    </head>
+    <body>
+        <datalist id="partyList">
+        </datalist>
+        <datalist id="itemList">
+        </datalist>
+          <datalist id="unitList">
+            <option value="Kgs.">
+            <option value="Pcs.">
+            <option value="Ft">
+            <option value="Bndl">
+          </datalist>
+        <div id="header">
+            <div id="title">
+                Gupta Steels POS
+            </div>
+            <!-- <select name="user" id="selectUser">
+                <option value="1">admin</option>
+            </select> -->
+            <div class="input-group mb-3 partyList">
+                <input id="partyName" type="text" placeholder="Select Party Name" list = "partyList" onkeyup="return" style = "text-align: center;">
+            </div>
+        </div>
+        <div id="body">
+            <div id="table">
+                <table class="tinput" id = "orderTable">
+                    <tr>
+                        <th>S.No.</th>
+                        <th>Item</th>
+                        <th>Qty.</th>
+                        <th>Unit</th>
+                        <th>Desc.</th>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td><input type="text" list="itemList" onkeyup="enterLcell(event)"></td>
+                        <td><input type="text" placeholder="0" oninput="nextRow(this)" onkeyup="enterLcell(event)"></td>
+                        <td><input type="text" list ="unitList" onkeyup="enterL(event)"></td>
+                        <td><input type="text" placeholder="Desc." onkeyup="enterL(event)"></td>
+                    </tr>
+            
+                </table>
+            </div>
+            <div id="share">
+                <button onclick="createOrder()"> Save </button>
+                <button onclick="sendWhatsApp()"> WhatsApp </button>
+                <button onclick="print()"> Print </button>
+            </div>
+        </div>
+    </body>
+</html>
