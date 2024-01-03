@@ -19,8 +19,6 @@ class OrderItem(db.Model):
     itemQty = db.Column(db.Text, nullable=False)
     itemUnit = db.Column(db.Text, nullable=False)
     orderID = db.Column(db.ForeignKey('order.orderID'), nullable=False)
-    weight = db.Column(db.Integer)
-    weightOld = db.Column(db.Integer)
     itemDesc = db.Column(db.Text)
     order = db.relationship('Order', primaryjoin='OrderItem.orderID == Order.orderID', backref='order_items')
 
@@ -45,3 +43,10 @@ class ItemList(db.Model):
 class PartyList(db.Model):
     __tablename__ = 'partyList'
     partyName = db.Column(db.Text, primary_key=True, nullable=False)
+
+class WeightList(db.Model):
+    __tablename__ = 'weightList'
+    wid = db.Column(db.Integer, primary_key=True)
+    itemID = db.Column(db.ForeignKey('orderItems.itemID'))
+    weight = db.Column(db.Integer, nullable=False)
+    timestamp = db.Column(db.Integer, nullable=False, server_default=db.FetchedValue())

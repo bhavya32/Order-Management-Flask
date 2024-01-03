@@ -1,4 +1,4 @@
-from .models import PartyList, db, User, Order, OrderItem, ItemList
+from .models import PartyList, WeightList, db, User, Order, OrderItem, ItemList
 
 
 def getActiveOrders() -> Order:
@@ -6,6 +6,14 @@ def getActiveOrders() -> Order:
 
 def getOrderItems(orderID) -> OrderItem:
     return OrderItem.query.filter_by(orderID=orderID).all()
+
+def getItemWeight(itemID):
+    return WeightList.query.filter_by(itemID=itemID).all()
+
+def deleteWeight(wid):
+    w = WeightList.query.filter_by(wid=wid).first()
+    db.session.delete(w)
+    db.session.commit()
 
 def createNewOrder(order, orderItems):
     o = Order()
@@ -40,8 +48,10 @@ def getCreatorName(creator):
 
 def weightUpdate(itemID, weight):
     item = OrderItem.query.filter_by(itemID=itemID).first()
-    if item.weight != None:
-        item.weightOld = weight
-    item.weight = weight
+    w = WeightList()
+    if itemID != None:
+        w.itemID = itemID
+    w.weight = weight
+    db.session.add(w)
     db.session.commit()
     return item.orderID, item.itemName

@@ -1,77 +1,53 @@
-function nextRow(el) {
-    var table = el.parentElement.parentElement.parentElement;
-    if (table.rows[table.rows.length - 1] == el.parentElement.parentElement) {
-    var row = table.insertRow(table.rows.length);
-    var cell0 = row.insertCell(0);
-    var cell1 = row.insertCell(1);
-    var cell2 = row.insertCell(2);
-    var cell3 = row.insertCell(3);
-    var cell4 = row.insertCell(4);
-    cell0.innerHTML = (table.rows.length - 1).toString();
-    cell1.innerHTML=`<input type="text" list="itemList" onkeyup="enterLcell(event)">`;
-    cell2.innerHTML = `<input type="text" placeholder="0" oninput="nextRow(this)" onkeyup="enterLcell(event)">`;
-    cell3.innerHTML=`<input type="text" list ="unitList" onkeyup="enterL(event)">`;
-    cell4.innerHTML=`<input type="text" placeholder="Desc." onkeyup="enterL(event)">`;
-    return cell1
-    }
-    else {
-        console.log(table[table.rows.length - 1])
-    }
-}
-
-function sizeChange(el) {
-    var size = el.value;
-    var mm = el.parentElement.parentElement.children[3]
-    mm.innerHTML = parseImperial(size) + " mm";
-    nextRow(el);
-}
-
-
-function enterL(e) {
-    if (e.key == "Enter") {
-        e.target.parentElement.parentElement.nextElementSibling.children[1].children[0].focus();
-
-    }
-}
-
-function enterLcell(e) {
-    if (e.key == "Enter") {
-        e.target.parentElement.nextElementSibling.children[0].focus();
-
-    }
-
-}
-
-async function getItemList() {
-    let url = './get_item_names';
-    let json = await fetch(url)
-    //console.log(await json.json())
-    itemList = await json.json()
-    json = await fetch('./get_party_names')
-    partyList = await json.json()
-    populateDatalistOptions();
-}
-itemList = []
-partyList = []
-getItemList();
-function populateDatalistOptions() {
-    var datalist = document.getElementById('itemList');
-    itemList.forEach(element => {
-        var option = document.createElement('option');
-        option.value = element;
-        datalist.appendChild(option);
-    });
-    datalist = document.getElementById('partyList');
-    partyList.forEach(element => {
-        var option = document.createElement('option');
-        option.value = element;
-        datalist.appendChild(option);
-    });
-}
-
 var socket = io();
+
 socket.on('connect', function() {
         socket.emit('my event', {data: 'I\'m connected!'});
 });
+socket.on('update', async function(data) {
+    console.log(data, "time to refresh");
+    await refreshTable();
 
-window.addEventListener("keyup", function(e){ if(e.keyCode == 27) history.back(); }, false);
+    notifyResult(data["title"], data["message"]);
+});
+
+//window.addEventListener("keyup", function(e){ if(e.keyCode == 27) history.back(); }, false);
+
+async function refreshTable() {
+    let currTable = document.getElementById("orderList");
+    //get current window url
+    let url = window.location.pathname;
+    let res = await fetch(url);
+    let html = await res.text();
+    var dummy = document.createElement('html');
+    dummy.innerHTML = html;
+    let newTable = dummy.getElementsByTagName("table")[0];
+    currTable.innerHTML = newTable.innerHTML;
+
+}
+
+let crfi = -1
+function changeRowFocus(idx) {
+    if (idx <= 0) {idx = 1;}
+    let table = document.getElementById("orderList");
+    if (idx >= table.rows.length) {idx = table.rows.length - 1;}
+    if (crfi != -1){table.rows[crfi].classList.remove("table-secondary");}
+    table.rows[idx].classList.add("table-secondary");
+    crfi = idx;
+}
+function gotoOrder() {
+    let table = document.getElementById("orderList");
+    if (crfi != -1) {
+        table.rows[crfi].click();
+    }
+}
+
+function notifyResult(title, message) {
+    let toast = new bootstrap.Toast(document.getElementById("liveToast"));
+    document.getElementById("toastBody").innerHTML = message;
+    document.getElementById("toastTitle").innerHTML = title;
+    toast.show();
+}
+
+window.addEventListener("keyup", function(e){ if(e.keyCode == 40) changeRowFocus(crfi + 1); }, false);
+window.addEventListener("keyup", function(e){ if(e.keyCode == 38) changeRowFocus(crfi - 1); }, false);
+window.addEventListener("keyup", function(e){ if(e.keyCode == 13) gotoOrder() }, false);

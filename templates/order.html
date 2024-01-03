@@ -17,6 +17,27 @@
         </div>
         
         <div class="container body">
+            <!-- FILEPATH: /d:/CodeBase/Order Management/Order-Management-Flask/static/order.js -->
+    <!-- BEGIN: weightDetailsModal -->
+    <div id="weightDetailsModal" class="modal">
+        <div class="modal-content">
+            <span id="weightDetailsModalLabel" class="modal-title">Weight Details</span>
+            <table id="weightDetailsTable">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Weight</th>
+                        <th>Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Weight details rows will be dynamically added here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- END: weightDetailsModal -->
+    <!-- Modal -->
             <h1>Current Orders</h1>
             <table id="orderItemsList" class="table table-hover">
                 <thead>
@@ -39,7 +60,7 @@
                 </tbody>
             </table>
             <div id="share">
-                <button type="button" class="btn btn-dark" onclick="copy()"> Copy </button>
+                <button type="button" class="btn btn-dark" onclick="copyTable()"> Copy </button>
                 <button type="button" class="btn btn-dark" onclick="sendWhatsApp()"> WhatsApp </button>
                 <button type="button" class="btn btn-dark" onclick="print()"> Print </button>
             </div>

@@ -3,7 +3,7 @@ from flask import render_template
 from flask import current_app as app
 from flask_login import current_user, login_required, login_user, logout_user
 from .database import socketio, login_manager
-from .dbFunctions import getActiveOrders, createNewOrder, getCreatorName, getOrderByID, getItemList, getOrderItems, getPartyList, getUser, weightUpdate
+from .dbFunctions import deleteWeight, getActiveOrders, createNewOrder, getCreatorName, getItemWeight, getOrderByID, getItemList, getOrderItems, getPartyList, getUser, weightUpdate
 import json
 import hashlib
 
@@ -59,7 +59,7 @@ def home():
         count = 0
         orderitems = getOrderItems(order.orderID)
         for i in orderitems:
-            if i.weight != None:
+            if getItemWeight(i.itemID) != []:
                 count += 1
         entry["status"] = str(count) + "/" + str(len(orderitems))
         o.append(entry)
@@ -69,21 +69,7 @@ def home():
 @app.route("/create")
 @login_required
 def create():
-    orders = getActiveOrders()
-    r = []
-    for order in orders:
-        entry = {}
-        entry["orderID"] = order.orderID
-        entry["partyName"] = order.partyName
-        entry["timestamp"] = order.timestamp
-        count = 0
-        orderitems = getOrderItems(order.orderID)
-        for i in orderitems:
-            if i.weight != None:
-                count += 1
-        entry["status"] = str(count) + "/" + str(len(orderitems))
-        r.append(entry)
-    return render_template("create.html",orders=r)
+    return render_template("create.html")
 
 @app.route("/get_item_names")
 def get_item_names():
@@ -98,14 +84,16 @@ def get_order_items(orderID):
     orderItems = getOrderItems(orderID)
     r = []
     for item in orderItems:
+        wlist = [{"wid": x.wid, "weight":x.weight, "timestamp":x.timestamp} for x in getItemWeight(item.itemID)]
         entry = {}
         entry["itemName"] = item.itemName
         entry["itemDesc"] = item.itemDesc
         entry["itemQty"] = item.itemQty
         entry["itemUnit"] = item.itemUnit
         entry["itemID"] = item.itemID
-        entry["weight"] = item.weight
-        entry["weightOld"] = item.weightOld
+        entry["weight"] = 0
+        entry["weightOld"] = 0
+        entry["weightList"] = wlist
         r.append(entry)
     s = {"orderItems": r}
     o =getOrderByID(orderID)
@@ -134,17 +122,29 @@ def order(orderID):
 @app.route("/print_order/<int:orderID>", methods=["GET"])
 @login_required
 def print_order(orderID):
-    #order = getOrderByID(orderID)
-    #orderItems = getOrderItems(orderID)
+    order = getOrderByID(orderID)
+    orderItems = getOrderItems(orderID)
+    ois = []
+    for items in orderItems:
+        ois.append({"itemID":items.itemID, "itemName": items.itemName, "itemQty": items.itemQty, "itemUnit": items.itemUnit})
+    socketio.emit('print', {'orderID': orderID, 'partyName': order.partyName, 'orderItems': ois})
     return {"result": "Print Queued"}
 
 @app.route("/weight/<int:itemID>/<int:weight>")
 def insert_weight(itemID, weight):
     orderID, itemName = weightUpdate(itemID, weight)
     partyName = getOrderByID(orderID).partyName
+    socketio.emit('update', {'reason': "weightUpdate", 'code':0, 'title':f"Order #{orderID}", 'message':f"{itemName} - {weight}"})
     return {"result": "success", "partyName":partyName, "itemName":itemName}
 
 @app.route("/weight/<int:weight>")
 def insert_weight_unknown(weight):
     #save the weight somewhere
     return {"result": "success", "weight":weight}
+
+
+@app.route("/delete_weight/<int:wid>")
+@login_required
+def delete_weight(wid):
+    deleteWeight(wid)
+    return {"result": "success"}
