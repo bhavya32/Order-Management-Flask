@@ -43,6 +43,7 @@ class ItemList(db.Model):
 class PartyList(db.Model):
     __tablename__ = 'partyList'
     partyName = db.Column(db.Text, primary_key=True, nullable=False)
+    mobile = db.Column(db.Integer, nullable=False)
 
 class WeightList(db.Model):
     __tablename__ = 'weightList'

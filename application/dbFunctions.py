@@ -7,6 +7,19 @@ def getActiveOrders() -> Order:
 def getOrderItems(orderID) -> OrderItem:
     return OrderItem.query.filter_by(orderID=orderID).all()
 
+def splitOrderItems(orderItems):
+    items = [[], []]
+    for item in orderItems:
+        itemx = ItemList.query.filter_by(itemName=item.itemName).first()
+        if itemx == None:
+            items[1].append(item)
+        elif itemx.itemLoc == 1:
+            items[0].append(item)
+        else:
+            items[1].append(item)
+    return items
+    
+
 def getItemWeight(itemID):
     return WeightList.query.filter_by(itemID=itemID).all()
 
@@ -32,6 +45,7 @@ def createNewOrder(order, orderItems):
         db.session.add(oi)
     db.session.commit()
     return o.orderID
+
 def getOrderByID(orderID):
     return Order.query.filter_by(orderID=orderID).first()
 

@@ -3,7 +3,7 @@ from flask import render_template
 from flask import current_app as app
 from flask_login import current_user, login_required, login_user, logout_user
 from .database import socketio, login_manager
-from .dbFunctions import deleteWeight, getActiveOrders, createNewOrder, getCreatorName, getItemWeight, getOrderByID, getItemList, getOrderItems, getPartyList, getUser, weightUpdate
+from .dbFunctions import deleteWeight, getActiveOrders, createNewOrder, getCreatorName, getItemWeight, getOrderByID, getItemList, getOrderItems, getPartyList, getUser, splitOrderItems, weightUpdate
 import json
 import hashlib
 
@@ -124,10 +124,20 @@ def order(orderID):
 def print_order(orderID):
     order = getOrderByID(orderID)
     orderItems = getOrderItems(orderID)
+    orderItemsSplit = splitOrderItems(orderItems)
     ois = []
-    for items in orderItems:
+    for items in orderItemsSplit[0]:
         ois.append({"itemID":items.itemID, "itemName": items.itemName, "itemQty": items.itemQty, "itemUnit": items.itemUnit})
     socketio.emit('print', {'orderID': orderID, 'partyName': order.partyName, 'orderItems': ois})
+    
+    #time delay of 3 second
+    socketio.sleep(3)
+    ois = []
+    for items in orderItemsSplit[1]:
+        ois.append({"itemID":items.itemID, "itemName": items.itemName, "itemQty": items.itemQty, "itemUnit": items.itemUnit})
+    socketio.emit('print', {'orderID': orderID, 'partyName': order.partyName, 'orderItems': ois})
+    
+
     return {"result": "Print Queued"}
 
 @app.route("/weight/<int:itemID>/<int:weight>")

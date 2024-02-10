@@ -31,7 +31,7 @@ function createOrder() {
     .then(response => response.json())
     .then(data => {
         console.log(data);
-        // Handle the response data here
+        window.location.href = "/order/" + data.orderID;
     })
     .catch(error => {
         console.error('Error:', error);
