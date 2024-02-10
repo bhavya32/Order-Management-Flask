@@ -127,7 +127,7 @@ def print_order(orderID):
     orderItemsSplit = splitOrderItems(orderItems)
     ois = []
     for items in orderItemsSplit[0]:
-        ois.append({"itemID":items.itemID, "itemName": items.itemName, "itemQty": items.itemQty, "itemUnit": items.itemUnit})
+        ois.append({"itemID":items.itemID, "itemName": items.itemName, "itemQty": items.itemQty, "itemUnit": items.itemUnit, "itemDesc":items.itemDesc})
     socketio.emit('print', {'orderID': orderID, 'partyName': order.partyName, 'orderItems': ois})
     
     #time delay of 3 second
@@ -135,9 +135,8 @@ def print_order(orderID):
     ois = []
     for items in orderItemsSplit[1]:
         ois.append({"itemID":items.itemID, "itemName": items.itemName, "itemQty": items.itemQty, "itemUnit": items.itemUnit})
-    socketio.emit('print', {'orderID': orderID, 'partyName': order.partyName, 'orderItems': ois})
-    
-
+    if ois != []:
+        socketio.emit('print', {'orderID': orderID, 'partyName': order.partyName, 'orderItems': ois})
     return {"result": "Print Queued"}
 
 @app.route("/weight/<int:itemID>/<int:weight>")
@@ -147,9 +146,10 @@ def insert_weight(itemID, weight):
     socketio.emit('update', {'reason': "weightUpdate", 'code':0, 'title':f"Order #{orderID}", 'message':f"{itemName} - {weight}"})
     return {"result": "success", "partyName":partyName, "itemName":itemName}
 
-@app.route("/weight/<int:weight>")
+@app.route("/weight/NA/<int:weight>")
 def insert_weight_unknown(weight):
     #save the weight somewhere
+    print(weight)
     return {"result": "success", "weight":weight}
 
 
