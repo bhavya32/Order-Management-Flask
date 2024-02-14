@@ -141,6 +141,7 @@ def print_order(orderID):
 
 @app.route("/weight/<int:itemID>/<int:weight>")
 def insert_weight(itemID, weight):
+    itemID = itemID//10
     orderID, itemName = weightUpdate(itemID, weight)
     partyName = getOrderByID(orderID).partyName
     socketio.emit('update', {'reason': "weightUpdate", 'code':0, 'title':f"Order #{orderID}", 'message':f"{itemName} - {weight}"})
