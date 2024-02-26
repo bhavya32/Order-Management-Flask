@@ -48,6 +48,16 @@ function notifyResult(title, message) {
     toast.show();
 }
 
+function delete_order(id) {
+    console.log("deleting ", id)
+    let url = './complete/' + id;
+    fetch(url).then(() => {
+        refreshTable()
+    })
+    
+    return false; 
+}
+
 window.addEventListener("keyup", function(e){ if(e.keyCode == 40) changeRowFocus(crfi + 1); }, false);
 window.addEventListener("keyup", function(e){ if(e.keyCode == 38) changeRowFocus(crfi - 1); }, false);
 window.addEventListener("keyup", function(e){ if(e.keyCode == 13) gotoOrder() }, false);

@@ -28,15 +28,17 @@
                     <th>Time</th>
                     <th>Status</th>
                     <th>Creator</th>
+                    <th>Action</th>
                 </thead>
                 <tbody>
                     {% for order in orders %}
                     <tr style='cursor: pointer; cursor: hand;' onclick="window.location.href='order/{{order.orderID}}'">
                         <td>{{order.orderID}}</td>
-                        <td>{{order.partyName}}</td>
+                        <td><b>{{order.partyName}}</b></td>
                         <td>{{order.timestamp}}</td>
                         <td>{{order.status}}</td>
                         <td>{{order.creator}}</td>
+                        <td><button onclick="event.stopPropagation();delete_order('{{order.orderID}}')" class="btn btn-outline-danger btn-sm">Delete</button></td>
                     </tr>
                     {% endfor %}
                 </tbody>

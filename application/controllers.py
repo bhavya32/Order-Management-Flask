@@ -3,7 +3,7 @@ from flask import render_template
 from flask import current_app as app
 from flask_login import current_user, login_required, login_user, logout_user
 from .database import socketio, login_manager
-from .dbFunctions import deleteWeight, getActiveOrders, createNewOrder, getCreatorName, getItemWeight, getOrderByID, getItemList, getOrderItems, getPartyList, getUser, splitOrderItems, weightUpdate
+from .dbFunctions import changeOrderStatus, deleteWeight, getActiveOrders, createNewOrder, getCreatorName, getItemWeight, getOrderByID, getItemList, getOrderItems, getPartyList, getUser, splitOrderItems, weightUpdate
 import json
 import hashlib
 
@@ -153,7 +153,11 @@ def insert_weight_unknown(weight):
     print(weight)
     return {"result": "success", "weight":weight}
 
-
+@app.route("/complete/<int:orderID>")
+@login_required
+def complete_order(orderID):
+    changeOrderStatus(orderID)
+    return {"result":"success"}
 @app.route("/delete_weight/<int:wid>")
 @login_required
 def delete_weight(wid):

@@ -59,7 +59,11 @@ def getUser(username):
     return User.query.filter_by(username=username).first()
 def getCreatorName(creator):
     return User.query.filter_by(userID=creator).first().username
-
+def changeOrderStatus(id):
+    odr = Order.query.filter_by(orderID=id).first()
+    odr.status=1
+    db.session.commit()
+    return 1
 def weightUpdate(itemID, weight):
     item = OrderItem.query.filter_by(itemID=itemID).first()
     w = WeightList()

@@ -6,7 +6,7 @@ engine = None
 Base = declarative_base()
 db = SQLAlchemy()
 
-socketio = SocketIO()
+socketio = SocketIO(cors_allowed_origins="*")
 
 from flask_login import LoginManager
 login_manager = LoginManager()
