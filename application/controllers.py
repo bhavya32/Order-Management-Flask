@@ -134,7 +134,7 @@ def print_order(orderID):
     socketio.sleep(3)
     ois = []
     for items in orderItemsSplit[1]:
-        ois.append({"itemID":items.itemID, "itemName": items.itemName, "itemQty": items.itemQty, "itemUnit": items.itemUnit})
+        ois.append({"itemID":items.itemID, "itemName": items.itemName, "itemQty": items.itemQty, "itemUnit": items.itemUnit, "itemDesc":items.itemDesc})
     if ois != []:
         socketio.emit('print', {'orderID': orderID, 'partyName': order.partyName, 'orderItems': ois})
     return {"result": "Print Queued"}
