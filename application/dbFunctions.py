@@ -55,6 +55,14 @@ def getItemList():
 def getPartyList():
     return PartyList.query.all()
 
+def itemFlip(id):
+    x = ItemList.query.filter_by(itemID=id).first()
+    if x.itemLoc == 0:
+        x.itemLoc = 1
+    else:
+        x.itemLoc = 0
+    db.session.commit()
+
 def getUser(username):
     return User.query.filter_by(username=username).first()
 def getCreatorName(creator):

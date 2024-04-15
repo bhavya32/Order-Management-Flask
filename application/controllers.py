@@ -3,7 +3,7 @@ from flask import render_template
 from flask import current_app as app
 from flask_login import current_user, login_required, login_user, logout_user
 from .database import socketio, login_manager
-from .dbFunctions import changeOrderStatus, deleteWeight, getActiveOrders, createNewOrder, getCreatorName, getItemWeight, getOrderByID, getItemList, getOrderItems, getPartyList, getUser, splitOrderItems, weightUpdate
+from .dbFunctions import changeOrderStatus, deleteWeight, getActiveOrders, createNewOrder, getCreatorName, getItemWeight, getOrderByID, getItemList, getOrderItems, getPartyList, getUser, itemFlip, splitOrderItems, weightUpdate
 import json
 import hashlib
 
@@ -163,3 +163,14 @@ def complete_order(orderID):
 def delete_weight(wid):
     deleteWeight(wid)
     return {"result": "success"}
+
+@app.route("/items")
+@login_required
+def item_list():
+    return render_template("items.html", items = getItemList())
+
+@app.route("/item/<int:id>/flip")
+@login_required
+def item_flip(id):
+    itemFlip(id)
+    return redirect(url_for("item_list"))
