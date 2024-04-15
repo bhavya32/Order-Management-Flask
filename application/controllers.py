@@ -1,3 +1,4 @@
+import datetime
 from flask import Flask, request, redirect, url_for
 from flask import render_template
 from flask import current_app as app
@@ -54,7 +55,7 @@ def home():
         entry = {}
         entry["orderID"] = order.orderID
         entry["partyName"] = order.partyName
-        entry["timestamp"] = order.timestamp
+        entry["timestamp"] = datetime.datetime.fromisoformat(order.timestamp) + datetime.timedelta(hours=5, minutes=30)
         entry["creator"] = getCreatorName(order.creator)
         count = 0
         orderitems = getOrderItems(order.orderID)
