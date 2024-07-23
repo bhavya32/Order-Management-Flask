@@ -46,6 +46,30 @@ def createNewOrder(order, orderItems):
     db.session.commit()
     return o.orderID
 
+def addOrderItems(orderID, orderItems):
+    for orderItem in orderItems:
+        oi = OrderItem()
+        oi.itemName = orderItem["name"]
+        oi.orderID = orderID
+        oi.itemDesc = orderItem["desc"]
+        oi.itemQty = orderItem["qty"]
+        oi.itemUnit = orderItem["unit"]
+        db.session.add(oi)
+    db.session.commit()
+
+def deleteOrderItem(orderItemID):
+    w = WeightList.query.filter_by(itemID = orderItemID).all()
+    for i in w:
+        db.session.delete(i)
+    oi = OrderItem.query.filter_by(itemID=orderItemID).first()
+    db.session.delete(oi)
+    db.session.commit()
+
+def updatePrice(orderItemID, price):
+    oi = OrderItem.query.filter_by(itemID=orderItemID).first()
+    oi.price = price
+    db.session.commit()
+    
 def getOrderByID(orderID):
     return Order.query.filter_by(orderID=orderID).first()
 
@@ -74,10 +98,12 @@ def changeOrderStatus(id):
     return 1
 def weightUpdate(itemID, weight):
     item = OrderItem.query.filter_by(itemID=itemID).first()
+    if (item == None):
+        return False, None, None
     w = WeightList()
     if itemID != None:
         w.itemID = itemID
     w.weight = weight
     db.session.add(w)
     db.session.commit()
-    return item.orderID, item.itemName
+    return True, item.orderID, item.itemName

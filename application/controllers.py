@@ -4,7 +4,7 @@ from flask import render_template
 from flask import current_app as app
 from flask_login import current_user, login_required, login_user, logout_user
 from .database import socketio, login_manager
-from .dbFunctions import changeOrderStatus, deleteWeight, getActiveOrders, createNewOrder, getCreatorName, getItemWeight, getOrderByID, getItemList, getOrderItems, getPartyList, getUser, itemFlip, splitOrderItems, weightUpdate
+from .dbFunctions import addOrderItems, changeOrderStatus, deleteOrderItem, deleteWeight, getActiveOrders, createNewOrder, getCreatorName, getItemWeight, getOrderByID, getItemList, getOrderItems, getPartyList, getUser, itemFlip, splitOrderItems, updatePrice, weightUpdate
 import json
 import hashlib
 
@@ -92,6 +92,7 @@ def get_order_items(orderID):
         entry["itemQty"] = item.itemQty
         entry["itemUnit"] = item.itemUnit
         entry["itemID"] = item.itemID
+        entry["rate"] = item.price
         entry["weight"] = 0
         entry["weightOld"] = 0
         entry["weightList"] = wlist
@@ -112,6 +113,23 @@ def create_order():
     return {"orderID": orderId}
     # return redirect(url_for('order', orderID=order.orderID))
 
+@app.route("/modify_order", methods=["POST"])
+@login_required
+def modify_order():
+    data = request.get_json()
+    orderID = data["orderID"]
+    orderItems = data["orderItems"]
+    # order = getOrderByID(createNewOrder(partyName, orderItems))
+    addOrderItems(orderID, orderItems)
+    #print(partyName, orderItems)
+    return {"orderID": orderID}
+    # return redirect(url_for('order', orderID=order.orderID))
+
+@app.route("/delete_order_item/<int:itemID>", methods=["GET"])
+@login_required
+def delete_order_item(itemID):
+    deleteOrderItem(itemID)
+    return {"result": "success"}
 
 @app.route("/order/<int:orderID>", methods=["GET"])
 @login_required
@@ -119,6 +137,37 @@ def order(orderID):
     order = getOrderByID(orderID)
     orderItems = getOrderItems(orderID)
     return render_template("order.html", order=order, orderItems=orderItems)
+
+@app.route("/modifyOrder/<int:orderID>", methods=["GET"])
+@login_required
+def modifyOrder(orderID):
+    order = getOrderByID(orderID)
+    orderItems = getOrderItems(orderID)
+    return render_template("modifyOrder.html", order=order, orderItems=orderItems)
+
+
+@app.route("/modify_price", methods=["POST"])
+@login_required
+def modify_price():
+    data = request.get_json()
+    #print(data)
+    for key in data:
+        try:
+            updatePrice(int(key), data[key])
+        except:
+            pass
+
+    return {"result": "success"}
+    # return redirect(url_for('order', orderID=order.orderID))
+
+
+@app.route("/modifyPrice/<int:orderID>", methods=["GET"])
+@login_required
+def modifyPrice(orderID):
+    order = getOrderByID(orderID)
+    orderItems = getOrderItems(orderID)
+    return render_template("modifyPrice.html", order=order, orderItems=orderItems)
+
 
 @app.route("/print_order/<int:orderID>", methods=["GET"])
 @login_required
@@ -142,8 +191,11 @@ def print_order(orderID):
 
 @app.route("/weight/<int:itemID>/<int:weight>")
 def insert_weight(itemID, weight):
-    itemID = itemID//10
-    orderID, itemName = weightUpdate(itemID, weight)
+    itemID = itemID//10 #note: apparently barcode scanner adds a random digit, so we remove it here
+    status, orderID, itemName = weightUpdate(itemID, weight)
+    if not status:
+        print("item id deleted but weight updated")
+        return {"result":"error"}
     partyName = getOrderByID(orderID).partyName
     socketio.emit('update', {'reason': "weightUpdate", 'code':0, 'title':f"Order #{orderID}", 'message':f"{itemName} - {weight}"})
     return {"result": "success", "partyName":partyName, "itemName":itemName}

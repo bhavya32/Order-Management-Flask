@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Gupta Steels</title>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" >
+        <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" ></script>
+        <script src="{{url_for('static', filename='modifyOrder.js')}}"></script>
+    </head>
+    <body>
+        <datalist id="itemList">
+        </datalist>
+          <datalist id="unitList">
+            <option value="Kgs.">
+            <option value="Pcs.">
+            <option value="Ft">
+            <option value="Bndl">
+          </datalist>
+        <div id="header">
+            <div id="title" onclick="location.href='/'">
+                Gupta Steels POS
+            </div>
+            <button id="createOrder" type="button" class="btn btn-dark"><a href='{{url_for("create")}}' class = "badge badge-dark">New Order</a></button>
+        </div>
+        
+        <div class="container body">
+       
+            <h1>Current Orders</h1>
+            <table id="orderItemsList" class="table table-hover">
+                <thead>
+                    <th>S.No.</th>
+                    <th>Item</th>
+                    <th>Qty.</th>
+                    <th>Unit</th>
+                    <th>Desc.</th>
+                    <th>Weight</th>
+                    <th></th>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <div id="table">
+                <table class="tinput" id = "orderTable">
+                    <tr>
+                        <th>S.No.</th>
+                        <th>Item</th>
+                        <th>Qty.</th>
+                        <th>Unit</th>
+                        <th>Desc.</th>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td><input type="text" list="itemList" onkeyup="enterLcell(event)"></td>
+                        <td><input type="text" placeholder="0" oninput="nextRow(this)" onkeyup="enterLcell(event)"></td>
+                        <td><input type="text" list ="unitList" onkeyup="enterL(event)"></td>
+                        <td><input type="text" placeholder="Desc." onkeyup="enterL(event)"></td>
+                    </tr>
+            
+                </table>
+            </div>
+            <div id="share">
+                <button type="button" class="btn btn-dark" onclick="modify()"> Modify </button>
+            </div>
+            <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+                <div id="liveToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
+                  <div class="toast-header">
+                    <strong class="me-auto">Server</strong>
+                    <small>Just Now</small>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                  </div>
+                  <div class="toast-body" id = "toastBody">
+                    Print Command Queued
+                  </div>
+                </div>
+            </div>
+        </div>
+        
+    </body>
+</html>

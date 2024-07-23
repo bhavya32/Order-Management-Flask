@@ -25,10 +25,9 @@ async function copyTable() {
     for (let i=1; i<r.length; i++) {
         let x = r[i].cells;
         let y = x[1].innerHTML;
-        y += "\t" + get_weight(x[5].innerHTML) + "\t\t\t\t";
+        y += "\t" + get_weight(x[6].innerHTML) + "\tKgs.\t"+ x[4].innerHTML+"";
         t.push(y);
     }
-    console.log(t.join("\n"));
     navigator.clipboard.writeText(t.join("\n")).then(function() {
         console.log("copied")
     });
@@ -143,7 +142,7 @@ async function populateOrderTable() {
     }
     for(let i=0; i<il.length; i++) {
         let row = table.insertRow();
-        let t = [i+1, il[i]["itemName"], il[i]["itemQty"],il[i]["itemUnit"], il[i]["itemDesc"], parseWeight(il[i]["weightList"])];
+        let t = [i+1, il[i]["itemName"], il[i]["itemQty"],il[i]["itemUnit"],il[i]["rate"]/100 ,il[i]["itemDesc"], parseWeight(il[i]["weightList"])];
         
         for (let j=0; j<t.length; j++) {
             let cell = row.insertCell();

@@ -20,6 +20,7 @@ class OrderItem(db.Model):
     itemUnit = db.Column(db.Text, nullable=False)
     orderID = db.Column(db.ForeignKey('order.orderID'), nullable=False)
     itemDesc = db.Column(db.Text)
+    price = db.Column(db.Integer)
     order = db.relationship('Order', primaryjoin='OrderItem.orderID == Order.orderID', backref='order_items')
 
 

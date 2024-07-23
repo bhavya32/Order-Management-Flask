@@ -208,3 +208,7 @@ input::-webkit-calendar-picker-indicator {
     text-decoration: underline;
     cursor: pointer;
 }
+
+td {
+    vertical-align: middle;
+}

@@ -6,7 +6,7 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
         <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
-        <script src="{{url_for('static', filename='order.js')}}"></script>
+        <script src="{{url_for('static', filename='modifyPrice.js')}}"></script>
     </head>
     <body>
         <div id="header">
@@ -47,7 +47,6 @@
                     <th>Unit</th>
                     <th>Rate</th>
                     <th>Desc.</th>
-                    <th>Weight</th>
                 </thead>
                 <tbody>
                     <!-- {% for order in orders %}
@@ -61,11 +60,7 @@
                 </tbody>
             </table>
             <div id="share">
-                <button type="button" class="btn btn-dark" onclick="window.location='/modifyPrice/{{order.orderID}}'"> Rate </button>
-                <button type="button" class="btn btn-dark" onclick="window.location='/modifyOrder/{{order.orderID}}'"> Modify </button>
-                <button type="button" class="btn btn-dark" onclick="copyTable()"> Copy </button>
-                <button type="button" class="btn btn-dark" onclick="sendWhatsApp()"> WhatsApp </button>
-                <button type="button" class="btn btn-dark" onclick="print()"> Print </button>
+                <button type="button" class="btn btn-dark" onclick="modify()"> Save </button>
             </div>
             <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
                 <div id="liveToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
